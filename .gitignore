@@ -3,3 +3,9 @@ venv
 test.html
 .idea
 config/__pycache__
+helper/__pycache__/
+model/__pycache__/
+tables/__pycache__/
+migrations/__pycache__/
+models/__pycache__/
+services/__pycache__/

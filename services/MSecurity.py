@@ -1,6 +1,6 @@
 import pandas
 import config.environment as env
-from tables.security import Security
+from models.models import Security
 
 def get_all_security():
     query = env.session.query(Security)

@@ -2,11 +2,14 @@ import pandas
 from datetime import datetime
 from sqlalchemy import and_, or_, not_,asc, desc
 import config.environment as env
-from tables.daily_price import DailyPrice
-from tables.security import Security
+from models.models import DailyPrice
+from models.models import Security
 
-def get_price_of_security(ticket_id):
-    query = env.session.query(DailyPrice).filter(DailyPrice.ticker_id == ticket_id)
+def get_price_of_security(ticket_id=None):
+    query = env.session.query(DailyPrice)
+    if (ticket_id is not None):
+        query = query.filter(DailyPrice.ticker_id == ticket_id)
+
     result = pandas.read_sql(query.statement, env.session.bind)
     return result
 
@@ -32,9 +35,17 @@ def get_price_from_to_date(ticket_id=None, start_date=None, end_date=None):
     return result
 
 def get_price_security_belongto_sub_industry(sub_industry_id):
-    print(sub_industry_id)
     query = env.session.query(DailyPrice).join(Security, DailyPrice.ticker_id == Security.ticker_id)\
         .filter(Security.sub_industry_id == sub_industry_id)\
         .order_by(asc("price_date"))
+    result = pandas.read_sql(query.statement, env.session.bind)
+    return result
+
+def get_price_security_belong_to_date(ticker_id=None, listday=[]):
+    if (len(listday) == 0 or listday is None):
+        return False
+    query = env.session.query(DailyPrice).filter(DailyPrice.price_date.in_(listday))
+    if (ticker_id != None):
+        query = query.filter(DailyPrice.ticker_id == ticker_id)
     result = pandas.read_sql(query.statement, env.session.bind)
     return result
